@@ -11,8 +11,8 @@ const models = {
         'avatar': {type: String},
         'desc': {type: String},
         'title': {type: String},
-      'company': {type: String},
-      'money': {type: String}
+        'company': {type: String},
+        'money': {type: String}
     },
     chat: {
 

@@ -11,17 +11,34 @@ Router.get('/list', (req, res) => {
       return res.json(doc)
    })
 });
-Router.post('/login', (req, res) => {
-  const {user, pwd} = req.body;
-  User.findOne({user, pwd:md5Pwd(pwd)}, _filter, (err, doc) =>{
-    if(!doc) {
-      return res.json({code:1, msg: '用户名或者密码错误'})
-    }
 
-    res.cookie('userid', doc._id);
-    return res.json({code:0, data:doc})
-  })
+Router.post('/login', (req, res) => {
+    const {user, pwd} = req.body;
+    User.findOne({user, pwd:md5Pwd(pwd)}, _filter, (err, doc) => {
+        if(!doc) {
+            return res.json({code:1, msg: '用户名或者密码错误'})
+        }
+
+        res.cookie('userid', doc._id);
+        return res.json({code:0, data:doc})
+    })
 })
+
+Router.post('/update', (req, res) => {
+    const userid = req.cookies.userid;
+    if(!userid) {
+        return json.dumps({code:1})
+    }
+    const body = req.body
+    User.findByIdAndUpdate(userid, body, (err, doc) => {
+        const data = Object.assign({}, {
+            user: doc.user,
+            type: doc.type
+        }, body)
+        return res.json({code:0, data})
+    })
+})
+
 Router.post('/register', (req, res) => {
    const {user, pwd, type} =req.body
    User.findOne({user: user}, _filter, (err, doc) => {
